@@ -1,0 +1,50 @@
+// Payment types
+class UPI {
+    private String upiId;
+    public UPI(String upiId) { this.upiId = upiId; }
+    @Override
+    public String toString() { return "UPI: " + upiId; }
+}
+
+class Card {
+    private String cardNumber;
+    public Card(String cardNumber) { this.cardNumber = cardNumber; }
+    @Override
+    public String toString() { return "Card: ****" + cardNumber.substring(cardNumber.length()-4); }
+}
+
+class NetBanking {
+    private String bankName;
+    public NetBanking(String bankName) { this.bankName = bankName; }
+    @Override
+    public String toString() { return "NetBanking: " + bankName; }
+}
+
+// Generic Transaction Class
+class Transaction<T> {
+    private T paymentMethod;
+    private double amount;
+
+    public Transaction(T paymentMethod, double amount) {
+        this.paymentMethod = paymentMethod;
+        this.amount = amount;
+    }
+
+    public void processPayment() {
+        System.out.println("Processing payment of ₹" + amount + " via " + paymentMethod);
+    }
+}
+public class PaymentProcessor {
+    public static void main(String[] args) {
+        // Transactions with type safety
+        Transaction<UPI> t1 = new Transaction<>(new UPI("user@upi"), 1500);
+        Transaction<Card> t2 = new Transaction<>(new Card("1234567890123456"), 2500);
+        Transaction<NetBanking> t3 = new Transaction<>(new NetBanking("HDFC Bank"), 5000);
+
+        // Process payments
+        t1.processPayment();
+        t2.processPayment();
+        t3.processPayment();
+    }
+}
+

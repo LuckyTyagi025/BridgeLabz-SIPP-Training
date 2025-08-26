@@ -1,0 +1,100 @@
+import java.util.*;
+
+// ------------ Domain ------------
+class Student {
+    int id;
+    String name;
+
+    Student(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return name + " (ID=" + id + ")";
+    }
+}
+
+class Course {
+    String code;
+    String title;
+
+    Course(String code, String title) {
+        this.code = code;
+        this.title = title;
+    }
+
+    @Override
+    public String toString() {
+        return code + " - " + title;
+    }
+
+    // For using as key in HashMap, we must implement equals & hashCode
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Course)) return false;
+        Course c = (Course) o;
+        return code.equals(c.code);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code);
+    }
+}
+
+// ------------ Registration System ------------
+class RegistrationSystem {
+    private Map<Course, List<Student>> courseMap = new HashMap<>();
+
+    void register(Course c, Student s) {
+        courseMap.putIfAbsent(c, new ArrayList<>());
+        courseMap.get(c).add(s);
+    }
+
+    void displayRegistrations() {
+        System.out.println("=== Course Registrations ===");
+        for (Course c : courseMap.keySet()) {
+            System.out.println(c + ":");
+            List<Student> list = courseMap.get(c);
+            if (list.isEmpty()) {
+                System.out.println("   (No students)");
+            } else {
+                for (Student s : list) {
+                    System.out.println("   - " + s);
+                }
+            }
+        }
+    }
+}
+
+// ------------ Demo / Test ------------
+public class CollegeCourseRegistration {
+    public static void main(String[] args) {
+        // Students
+        Student s1 = new Student(1, "Alice");
+        Student s2 = new Student(2, "Bob");
+        Student s3 = new Student(3, "Charlie");
+        Student s4 = new Student(4, "Diana");
+
+        // Courses
+        Course c1 = new Course("CS101", "Intro to Programming");
+        Course c2 = new Course("MA201", "Calculus II");
+        Course c3 = new Course("PH301", "Quantum Physics");
+
+        // Registration System
+        RegistrationSystem reg = new RegistrationSystem();
+
+        // Register students
+        reg.register(c1, s1);
+        reg.register(c1, s2);
+        reg.register(c2, s2);
+        reg.register(c2, s3);
+        reg.register(c3, s4);
+
+        // Display all course registrations
+        reg.displayRegistrations();
+    }
+}

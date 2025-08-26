@@ -1,0 +1,109 @@
+// Rentable interface
+interface Rentable {
+    void rent();
+    void returnVehicle();
+    double calculateRent(int days);
+}
+
+// Abstract Vehicle class
+abstract class Vehicle implements Rentable {
+    protected String model;
+    protected double dailyRate;
+    protected boolean isRented;
+
+    public Vehicle(String model, double dailyRate) {
+        this.model = model;
+        this.dailyRate = dailyRate;
+        this.isRented = false;
+    }
+
+    @Override
+    public void rent() {
+        if (isRented) {
+            System.out.println(model + " is already rented!");
+        } else {
+            isRented = true;
+            System.out.println(model + " has been rented.");
+        }
+    }
+
+    @Override
+    public void returnVehicle() {
+        if (!isRented) {
+            System.out.println(model + " was not rented!");
+        } else {
+            isRented = false;
+            System.out.println(model + " has been returned.");
+        }
+    }
+
+    @Override
+    public double calculateRent(int days) {
+        return days * dailyRate;
+    }
+
+    public abstract void displayDetails();
+}
+
+// Car class
+class Car extends Vehicle {
+    private int seats;
+
+    public Car(String model, double dailyRate, int seats) {
+        super(model, dailyRate);
+        this.seats = seats;
+    }
+
+    @Override
+    public void displayDetails() {
+        System.out.println("Car: " + model + ", Seats: " + seats + ", Rate: " + dailyRate + "/day");
+    }
+}
+
+// Bike class
+class Bike extends Vehicle {
+    private int engineCC;
+
+    public Bike(String model, double dailyRate, int engineCC) {
+        super(model, dailyRate);
+        this.engineCC = engineCC;
+    }
+
+    @Override
+    public void displayDetails() {
+        System.out.println("Bike: " + model + ", Engine: " + engineCC + "cc, Rate: " + dailyRate + "/day");
+    }
+}
+
+// Truck class
+class Truck extends Vehicle {
+    private double loadCapacity;
+
+    public Truck(String model, double dailyRate, double loadCapacity) {
+        super(model, dailyRate);
+        this.loadCapacity = loadCapacity;
+    }
+
+    @Override
+    public void displayDetails() {
+        System.out.println("Truck: " + model + ", Capacity: " + loadCapacity + " tons, Rate: " + dailyRate + "/day");
+    }
+}
+
+// Factory class for creating vehicles
+class VehicleFactory {
+    public static Vehicle createVehicle(String type, String model, double dailyRate, double extra) {
+        switch (type.toLowerCase()) {
+            case "car":   return new Car(model, dailyRate, (int) extra);
+            case "bike":  return new Bike(model, dailyRate, (int) extra);
+            case "truck": return new Truck(model, dailyRate, extra);
+            default: throw new IllegalArgumentException("Invalid vehicle type: " + type);
+        }
+    }
+}
+
+// Test System
+public class VehicleRentalSystem {
+    public static void main(String[] args) {
+        Vehicle car = VehicleFactory.createVehicle("car", "Honda City", 2000, 5);
+        Vehicle bike = VehicleFactory.c

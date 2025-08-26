@@ -1,0 +1,74 @@
+import java.util.*;
+
+// Item class
+class Item {
+    private String name;
+    private double price;
+    private int quantity;
+
+    public Item(String name, double price, int quantity) {
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
+    public double getTotalPrice() {
+        return price * quantity;
+    }
+
+    @Override
+    public String toString() {
+        return name + " (₹" + price + " x " + quantity + ") = ₹" + getTotalPrice();
+    }
+}
+
+// Shopping Cart
+class ShoppingCart {
+    private List<Item> items = new ArrayList<>();
+
+    // Add item to cart
+    public void addItem(Item item) {
+        items.add(item);
+        System.out.println(item + " added to cart.");
+    }
+
+    // Show all items
+    public void showCart() {
+        System.out.println("\n--- Shopping Cart ---");
+        for (Item item : items) {
+            System.out.println(item);
+        }
+    }
+
+    // Generic method to calculate total price
+    public static <T extends Item> double calculateTotal(List<T> itemList) {
+        double total = 0;
+        for (T item : itemList) {
+            total += item.getTotalPrice();
+        }
+        return total;
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+}
+
+// Main Class
+public class Main {
+    public static void main(String[] args) {
+        ShoppingCart cart = new ShoppingCart();
+
+        // Add items
+        cart.addItem(new Item("Laptop", 50000, 1));
+        cart.addItem(new Item("Headphones", 2000, 2));
+        cart.addItem(new Item("Mouse", 800, 1));
+
+        // Show cart
+        cart.showCart();
+
+        // Calculate total
+        double total = ShoppingCart.calculateTotal(cart.getItems());
+        System.out.println("\n💰 Total Price = ₹" + total);
+    }
+}

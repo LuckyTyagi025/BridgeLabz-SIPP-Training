@@ -1,0 +1,64 @@
+// Abstract class Crop
+abstract class Crop {
+    protected String name;
+
+    public Crop(String name) {
+        this.name = name;
+    }
+
+    // Abstract methods
+    public abstract int waterRequirement();   // liters per acre per day
+    public abstract int harvestingTime();     // days until harvest
+
+    public void showDetails() {
+        System.out.println("Crop: " + name);
+        System.out.println("Water Requirement: " + waterRequirement() + " liters/day/acre");
+        System.out.println("Harvesting Time: " + harvestingTime() + " days\n");
+    }
+}
+
+// Rice implementation
+class Rice extends Crop {
+    public Rice() {
+        super("Rice");
+    }
+
+    @Override
+    public int waterRequirement() {
+        return 5000; // Example value
+    }
+
+    @Override
+    public int harvestingTime() {
+        return 120; // Example value
+    }
+}
+
+// Wheat implementation
+class Wheat extends Crop {
+    public Wheat() {
+        super("Wheat");
+    }
+
+    @Override
+    public int waterRequirement() {
+        return 2500; // Example value
+    }
+
+    @Override
+    public int harvestingTime() {
+        return 100; // Example value
+    }
+}
+
+// Main class
+public class SmartFarmingSystem {
+    public static void main(String[] args) {
+        Crop rice = new Rice();
+        Crop wheat = new Wheat();
+
+        // Display details
+        rice.showDetails();
+        wheat.showDetails();
+    }
+}

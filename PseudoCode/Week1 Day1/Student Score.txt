@@ -1,0 +1,31 @@
+import java.util.*;
+import java.util.stream.*;
+
+public class StudentScore {
+    public static void main(String[] args) {
+        // Create HashMap
+        Map<String, Integer> scores = new HashMap<>();
+        scores.put("Alice", 85);
+        scores.put("Bob", 92);
+        scores.put("Charlie", 78);
+        scores.put("Diana", 95);
+        scores.put("Ethan", 88);
+
+        // Display all scores
+        System.out.println("Student Scores: " + scores);
+
+        // Find highest scorer using streams
+        Map.Entry<String, Integer> highestScorer = scores.entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue())   // compare by marks
+                .orElse(null);
+
+        // Display result
+        if (highestScorer != null) {
+            System.out.println("Highest Scorer: " 
+                               + highestScorer.getKey() 
+                               + " with " 
+                               + highestScorer.getValue() + " marks.");
+        }
+    }
+}

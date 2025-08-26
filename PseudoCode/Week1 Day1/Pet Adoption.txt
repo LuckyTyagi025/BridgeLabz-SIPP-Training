@@ -1,0 +1,69 @@
+Pet Adoption
+
+
+class Pet {
+    String name;
+    int age;
+    String breed;
+
+  
+    Pet(String name, int age, String breed) {
+        this.name = name;
+        this.age = age;
+        this.breed = breed;
+    }
+
+    void displayInfo() {
+        System.out.println("Name: " + name);
+        System.out.println("Age: " + age + " years");
+        System.out.println("Breed: " + breed);
+    }
+}
+
+
+class Dog extends Pet {
+    boolean isTrained;
+
+    Dog(String name, int age, String breed, boolean isTrained) {
+        super(name, age, breed);  // calling parent constructor
+        this.isTrained = isTrained;
+    }
+
+    @Override
+    void displayInfo() {
+        super.displayInfo();
+        System.out.println("Trained: " + (isTrained ? "Yes" : "No"));
+    }
+}
+
+
+class Cat extends Pet {
+    boolean isIndoor;
+
+    Cat(String name, int age, String breed, boolean isIndoor) {
+        super(name, age, breed);
+        this.isIndoor = isIndoor;
+    }
+
+    @Override
+    void displayInfo() {
+        super.displayInfo();
+        System.out.println("Indoor Cat: " + (isIndoor ? "Yes" : "No"));
+    }
+}
+
+
+class Bird extends Pet {
+    boolean canTalk;
+
+    Bird(String name, int age, String breed, boolean canTalk) {
+        super(name, age, breed);
+        this.canTalk = canTalk;
+    }
+
+    @Override
+    void displayInfo() {
+        super.displayInfo();
+        System.out.println("Can Talk: " + (canTalk ? "Yes" : "No"));
+    }
+}

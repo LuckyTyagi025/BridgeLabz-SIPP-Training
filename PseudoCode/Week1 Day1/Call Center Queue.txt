@@ -1,0 +1,75 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
+class Customer {
+    String name;
+    boolean isEmergency;
+
+    Customer(String name, boolean isEmergency) {
+        this.name = name;
+        this.isEmergency = isEmergency;
+    }
+
+    @Override
+    public String toString() {
+        return name + (isEmergency ? " (Emergency)" : " (Normal)");
+    }
+}
+
+class CallCenterQueue {
+    private Queue<Customer> normalQueue;
+    private Queue<Customer> emergencyQueue;
+
+    public CallCenterQueue() {
+        normalQueue = new LinkedList<>();
+        emergencyQueue = new LinkedList<>();
+    }
+
+    // Add customer
+    public void enqueue(Customer c) {
+        if (c.isEmergency) {
+            emergencyQueue.add(c);
+        } else {
+            normalQueue.add(c);
+        }
+    }
+
+    // Serve customer
+    public Customer dequeue() {
+        if (!emergencyQueue.isEmpty()) {
+            return emergencyQueue.poll(); // serve emergency first
+        } else if (!normalQueue.isEmpty()) {
+            return normalQueue.poll(); // then normal
+        } else {
+            return null; // no customers
+        }
+    }
+
+    // Show queue status
+    public void displayQueues() {
+        System.out.println("Emergency Queue: " + emergencyQueue);
+        System.out.println("Normal Queue: " + normalQueue);
+    }
+}
+
+// Test class
+public class CallCenterQueueDemo {
+    public static void main(String[] args) {
+        CallCenterQueue callCenter = new CallCenterQueue();
+
+        // Add customers
+        callCenter.enqueue(new Customer("Alice", false));
+        callCenter.enqueue(new Customer("Bob", true));
+        callCenter.enqueue(new Customer("Charlie", false));
+        callCenter.enqueue(new Customer("Diana", true));
+
+        callCenter.displayQueues();
+
+        // Serve customers
+        System.out.println("\nServing: " + callCenter.dequeue());
+        System.out.println("Serving: " + callCenter.dequeue());
+        System.out.println("Serving: " + callCenter.dequeue());
+
+        callCenter.displayQueues();
+    }
+}

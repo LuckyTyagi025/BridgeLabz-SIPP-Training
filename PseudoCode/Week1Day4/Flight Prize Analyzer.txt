@@ -1,0 +1,98 @@
+import java.util.*;
+
+// Flight class
+class Flight {
+    String flightNumber;
+    double price;
+    int duration; // in minutes
+
+    public Flight(String flightNumber, double price, int duration) {
+        this.flightNumber = flightNumber;
+        this.price = price;
+        this.duration = duration;
+    }
+
+    @Override
+    public String toString() {
+        return "Flight{" +
+                "No='" + flightNumber + '\'' +
+                ", Price=" + price +
+                ", Duration=" + duration + " mins}";
+    }
+}
+
+// Comparator for sorting by Price
+class PriceComparator implements Comparator<Flight> {
+    @Override
+    public int compare(Flight f1, Flight f2) {
+        return Double.compare(f1.price, f2.price);
+    }
+}
+
+// Comparator for sorting by Duration
+class DurationComparator implements Comparator<Flight> {
+    @Override
+    public int compare(Flight f1, Flight f2) {
+        return Integer.compare(f1.duration, f2.duration);
+    }
+}
+
+// Merge Sort implementation for Flights
+class FlightSorter {
+    public static void mergeSort(List<Flight> flights, Comparator<Flight> comparator) {
+        if (flights.size() <= 1) return;
+
+        int mid = flights.size() / 2;
+        List<Flight> left = new ArrayList<>(flights.subList(0, mid));
+        List<Flight> right = new ArrayList<>(flights.subList(mid, flights.size()));
+
+        mergeSort(left, comparator);
+        mergeSort(right, comparator);
+
+        merge(flights, left, right, comparator);
+    }
+
+    private static void merge(List<Flight> flights, List<Flight> left, List<Flight> right, Comparator<Flight> comparator) {
+        int i = 0, j = 0, k = 0;
+
+        while (i < left.size() && j < right.size()) {
+            if (comparator.compare(left.get(i), right.get(j)) <= 0) {
+                flights.set(k++, left.get(i++));
+            } else {
+                flights.set(k++, right.get(j++));
+            }
+        }
+
+        while (i < left.size()) {
+            flights.set(k++, left.get(i++));
+        }
+
+        while (j < right.size()) {
+            flights.set(k++, right.get(j++));
+        }
+    }
+}
+
+// Test Analyzer
+public class FlightPriceAnalyzer {
+    public static void main(String[] args) {
+        List<Flight> flights = new ArrayList<>();
+        flights.add(new Flight("AI101", 5000, 180));
+        flights.add(new Flight("UK202", 4500, 220));
+        flights.add(new Flight("6E303", 6000, 150));
+        flights.add(new Flight("SG404", 4000, 240));
+
+        System.out.println("Original List:");
+        for (Flight f : flights) System.out.println(f);
+
+        // Sort by Price
+        FlightSorter.mergeSort(flights, new PriceComparator());
+        System.out.println("\nSorted by Price:");
+        for (Flight f : flights) System.out.println(f);
+
+        // Sort by Duration
+        FlightSorter.mergeSort(flights, new DurationComparator());
+        System.out.println("\nSorted by Duration:");
+        for (Flight f : flights) System.out.println(f);
+    }
+}

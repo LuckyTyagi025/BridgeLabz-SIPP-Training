@@ -1,0 +1,59 @@
+import java.util.*;
+
+// Doctor class
+class Doctor {
+    private String name;
+    private String specialization;
+
+    public Doctor(String name, String specialization) {
+        this.name = name;
+        this.specialization = specialization;
+    }
+
+    public String getSpecialization() {
+        return specialization;
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + specialization + ")";
+    }
+}
+
+// Hospital Department Mapper
+class Hospital {
+    private Map<String, List<Doctor>> departmentMap = new HashMap<>();
+
+    // Add a doctor to a department
+    public void addDoctor(String department, Doctor doctor) {
+        departmentMap.putIfAbsent(department, new ArrayList<>());
+        departmentMap.get(department).add(doctor);
+        System.out.println("Added: " + doctor + " -> " + department);
+    }
+
+    // Show all doctors in each department
+    public void showDepartments() {
+        System.out.println("\n--- Hospital Departments ---");
+        for (Map.Entry<String, List<Doctor>> entry : departmentMap.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+    }
+
+    // Filter doctors by specialization across all departments
+    public void filterBySpecialization(String specialization) {
+        System.out.println("\nDoctors with specialization: " + specialization);
+        departmentMap.values().stream()
+                .flatMap(List::stream)
+                .filter(doc -> doc.getSpecialization().equalsIgnoreCase(specialization))
+                .forEach(System.out::println);
+    }
+}
+
+// Main class
+public class Main {
+    public static void main(String[] args) {
+        Hospital hospital = new Hospital();
+
+        // Add doctors
+        hospital.addDoctor("Cardiology", new Doctor("Dr. Sharma", "Cardiologist"));
+        hospital.addDoctor("Cardiology

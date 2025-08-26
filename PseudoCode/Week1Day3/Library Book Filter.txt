@@ -1,0 +1,42 @@
+import java.util.*;
+import java.util.stream.*;
+
+class Book {
+    private String title;
+    private int year;
+    private double rating;
+
+    public Book(String title, int year, double rating) {
+        this.title = title;
+        this.year = year;
+        this.rating = rating;
+    }
+
+    public int getYear() { return year; }
+    public double getRating() { return rating; }
+
+    @Override
+    public String toString() {
+        return title + " (" + year + ") ⭐ " + rating;
+    }
+}
+
+public class LibraryBookFilter {
+    public static void main(String[] args) {
+        List<Book> books = Arrays.asList(
+                new Book("Java Fundamentals", 2012, 4.2),
+                new Book("Modern Java", 2018, 4.7),
+                new Book("Data Structures", 2016, 4.6),
+                new Book("AI Revolution", 2020, 4.9),
+                new Book("Old Algorithms", 2010, 3.9)
+        );
+
+        // Filter using Streams + Lambdas
+        List<Book> filteredBooks = books.stream()
+                .filter(b -> b.getYear() > 2015 && b.getRating() > 4.5)
+                .collect(Collectors.toList());
+
+        System.out.println("\n--- Books Published After 2015 with Rating > 4.5 ---");
+        filteredBooks.forEach(System.out::println);
+    }
+}

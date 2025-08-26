@@ -1,0 +1,98 @@
+import java.util.*;
+
+// Patient class
+class Patient {
+    private int id;
+    private String name;
+    private int age;
+    private String disease;
+
+    public Patient(int id, String name, int age, String disease) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.disease = disease;
+    }
+
+    public int getId() { return id; }
+    public void setDisease(String disease) { this.disease = disease; }
+
+    @Override
+    public String toString() {
+        return "Patient{" +
+                "ID=" + id +
+                ", Name='" + name + '\'' +
+                ", Age=" + age +
+                ", Disease='" + disease + '\'' +
+                '}';
+    }
+}
+
+// Patient Record Manager using HashMap
+class PatientRecordManager {
+    private Map<Integer, Patient> patientMap = new HashMap<>();
+
+    // Add a new patient
+    public void addPatient(Patient patient) {
+        patientMap.put(patient.getId(), patient);
+        System.out.println("✅ Added: " + patient);
+    }
+
+    // Retrieve a patient
+    public Patient getPatient(int id) {
+        return patientMap.get(id);
+    }
+
+    // Update patient disease
+    public void updatePatientDisease(int id, String newDisease) {
+        Patient patient = patientMap.get(id);
+        if (patient != null) {
+            patient.setDisease(newDisease);
+            System.out.println("✏️ Updated: " + patient);
+        } else {
+            System.out.println("⚠️ Patient with ID " + id + " not found.");
+        }
+    }
+
+    // Delete a patient
+    public void deletePatient(int id) {
+        Patient removed = patientMap.remove(id);
+        if (removed != null) {
+            System.out.println("🗑️ Deleted: " + removed);
+        } else {
+            System.out.println("⚠️ Patient with ID " + id + " not found.");
+        }
+    }
+
+    // Show all patients
+    public void showAllPatients() {
+        System.out.println("\n--- All Patients ---");
+        for (Patient patient : patientMap.values()) {
+            System.out.println(patient);
+        }
+    }
+}
+
+// Main class
+public class Main {
+    public static void main(String[] args) {
+        PatientRecordManager manager = new PatientRecordManager();
+
+        // Add patients
+        manager.addPatient(new Patient(101, "Rahul Sharma", 30, "Fever"));
+        manager.addPatient(new Patient(102, "Neha Verma", 25, "Fracture"));
+        manager.addPatient(new Patient(103, "Amit Singh", 40, "Diabetes"));
+
+        // Retrieve a patient
+        System.out.println("\n🔍 Retrieve ID 102: " + manager.getPatient(102));
+
+        // Update a patient
+        manager.updatePatientDisease(103, "Hypertension");
+
+        // Delete a patient
+        manager.deletePatient(101);
+
+        // Show all remaining patients
+        manager.showAllPatients();
+    }
+}

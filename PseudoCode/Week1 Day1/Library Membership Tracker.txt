@@ -1,0 +1,42 @@
+import java.time.LocalDate;
+import java.time.Period;
+
+class Member {
+    String name;
+    String memberId;
+    LocalDate membershipDate;   // using LocalDate for better date handling
+
+   
+    Member(String name, String memberId, LocalDate membershipDate) {
+        this.name = name;
+        this.memberId = memberId;
+        this.membershipDate = membershipDate;
+    }
+
+
+    boolean isMembershipValid() {
+        LocalDate today = LocalDate.now();
+        Period period = Period.between(membershipDate, today);
+        return period.getYears() < 1;  // valid if less than 1 year old
+    }
+
+    void displayMemberInfo() {
+        System.out.println("Name: " + name);
+        System.out.println("Member ID: " + memberId);
+        System.out.println("Membership Date: " + membershipDate);
+        System.out.println("Membership Valid: " + (isMembershipValid() ? "Yes" : "No"));
+    }
+}
+
+
+public class LibraryMembershipTracker {
+    public static void main(String[] args) {
+        // Example members
+        Member m1 = new Member("Alice", "M101", LocalDate.of(2024, 9, 1));
+        Member m2 = new Member("Bob", "M102", LocalDate.of(2023, 6, 10));
+
+        m1.displayMemberInfo();
+        System.out.println();
+        m2.displayMemberInfo();
+    }
+}

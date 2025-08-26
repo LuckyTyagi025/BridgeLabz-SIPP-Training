@@ -1,0 +1,151 @@
+import java.util.*;
+
+// ------------ Domain ------------
+class Zone {
+    int id;
+    String name;
+    // past crime counts per time bucket (e.g., last 6 months)
+    int[] pastCrimes;
+
+    Zone(int id, String name, int[] pastCrimes) {
+        this.id = id;
+        this.name = name;
+        this.pastCrimes = pastCrimes;
+    }
+
+    // Weighted score: recent months weigh more (1..n)
+    double riskScore() {
+        double wSum = 0, total = 0;
+        for (int i = 0; i < pastCrimes.length; i++) {
+            int w = i + 1; // more recent bucket gets higher weight
+            total += pastCrimes[i] * w;
+            wSum += w;
+        }
+        return total / wSum; // normalized weighted average
+    }
+
+    String heatLevel() {
+        double s = riskScore();
+        if (s >= 20) return "🔥 HOT";
+        if (s >= 10) return "⚠️ MED";
+        return "🟢 LOW";
+    }
+
+    @Override public String toString() {
+        return name + " (score=" + String.format("%.2f", riskScore()) + ", " + heatLevel() + ")";
+    }
+}
+
+// ------------ Graph + DFS ------------
+class CityGraph {
+    private final Map<Integer, List<Integer>> adj = new HashMap<>();
+    private final Map<Integer, Zone> zones = new HashMap<>();
+
+    void addZone(Zone z) {
+        zones.put(z.id, z);
+        adj.putIfAbsent(z.id, new ArrayList<>());
+    }
+
+    void addRoad(int a, int b) { // undirected adjacency (zones share a boundary/road)
+        adj.putIfAbsent(a, new ArrayList<>());
+        adj.putIfAbsent(b, new ArrayList<>());
+        adj.get(a).add(b);
+        adj.get(b).add(a);
+    }
+
+    // DFS to collect connected component and compute its average risk
+    private void dfs(int start, Set<Integer> seen, List<Integer> comp) {
+        Deque<Integer> stack = new ArrayDeque<>();
+        stack.push(start);
+        seen.add(start);
+        while (!stack.isEmpty()) {
+            int u = stack.pop();
+            comp.add(u);
+            for (int v : adj.getOrDefault(u, Collections.emptyList())) {
+                if (!seen.contains(v)) {
+                    seen.add(v);
+                    stack.push(v);
+                }
+            }
+        }
+    }
+
+    // Find connected high-risk clusters by component average >= threshold
+    List<List<Integer>> findHighRiskComponents(double threshold) {
+        Set<Integer> seen = new HashSet<>();
+        List<List<Integer>> hot = new ArrayList<>();
+
+        for (int id : zones.keySet()) {
+            if (!seen.contains(id)) {
+                List<Integer> comp = new ArrayList<>();
+                dfs(id, seen, comp);
+
+                double avg = comp.stream()
+                        .mapToDouble(i -> zones.get(i).riskScore())
+                        .average().orElse(0.0);
+
+                if (avg >= threshold) hot.add(comp);
+            }
+        }
+        return hot;
+    }
+
+    // Utility: print all zones sorted by risk
+    void printHeatmap() {
+        System.out.println("=== Heatmap Legend ===");
+        System.out.println("🔥 HOT: score >= 20");
+        System.out.println("⚠️ MED: 10–19.99");
+        System.out.println("🟢 LOW: < 10\n");
+
+        System.out.println("=== Zone Risk Scores ===");
+        zones.values().stream()
+                .sorted((a, b) -> Double.compare(b.riskScore(), a.riskScore()))
+                .forEach(z -> System.out.println("• " + z));
+        System.out.println();
+    }
+
+    void printHotComponents(List<List<Integer>> hot) {
+        if (hot.isEmpty()) {
+            System.out.println("No high-risk connected components found at this threshold.");
+            return;
+        }
+        System.out.println("=== High-Risk Connected Components ===");
+        int idx = 1;
+        for (List<Integer> comp : hot) {
+            double avg = comp.stream().mapToDouble(i -> zones.get(i).riskScore()).average().orElse(0);
+            System.out.println("Cluster " + (idx++) + " (avg=" + String.format("%.2f", avg) + "):");
+            for (int id : comp) System.out.println("   - " + zones.get(id));
+        }
+    }
+}
+
+// ------------ Demo / Test ------------
+public class CrimePredictionHeatmap {
+    public static void main(String[] args) {
+        CityGraph city = new CityGraph();
+
+        // Sample zones (pastCrimes: oldest … newest)
+        city.addZone(new Zone(1, "Zone A", new int[]{5, 7, 8, 10, 12, 18}));
+        city.addZone(new Zone(2, "Zone B", new int[]{2, 3, 4, 5, 6, 8}));
+        city.addZone(new Zone(3, "Zone C", new int[]{9, 11, 15, 20, 21, 25}));
+        city.addZone(new Zone(4, "Zone D", new int[]{1, 1, 1, 2, 2, 3}));
+        city.addZone(new Zone(5, "Zone E", new int[]{6, 7, 7, 8, 9, 11}));
+        city.addZone(new Zone(6, "Zone F", new int[]{12, 13, 15, 16, 18, 22}));
+
+        // Roads/boundaries (build connected graph)
+        city.addRoad(1, 2);
+        city.addRoad(2, 3);
+        city.addRoad(3, 6);
+        city.addRoad(2, 5);
+        city.addRoad(4, 5);
+
+        // Print textual heatmap
+        city.printHeatmap();
+
+        // Choose a threshold for "high-risk component" (avg component score)
+        double threshold = 15.0; // tweak as needed
+        List<List<Integer>> highRisk = city.findHighRiskComponents(threshold);
+
+        city.printHotComponents(highRisk);
+    }
+}

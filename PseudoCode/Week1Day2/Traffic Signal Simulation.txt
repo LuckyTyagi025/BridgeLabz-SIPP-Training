@@ -1,0 +1,62 @@
+// Enum for Traffic Lights
+enum TrafficLight {
+    RED, 
+    GREEN, 
+    YELLOW
+}
+
+// Class for Traffic Signal Simulation
+class TrafficSignal {
+    private TrafficLight currentLight;
+
+    public TrafficSignal() {
+        currentLight = TrafficLight.RED; // Start with RED
+    }
+
+    // Switch lights based on intervals
+    public void changeLight() {
+        switch (currentLight) {
+            case RED:
+                currentLight = TrafficLight.GREEN;
+                break;
+            case GREEN:
+                currentLight = TrafficLight.YELLOW;
+                break;
+            case YELLOW:
+                currentLight = TrafficLight.RED;
+                break;
+        }
+    }
+
+    public TrafficLight getCurrentLight() {
+        return currentLight;
+    }
+}
+
+// Main class to run the simulation
+public class TrafficSimulation {
+    public static void main(String[] args) throws InterruptedException {
+        TrafficSignal signal = new TrafficSignal();
+
+        // Simulate for 10 cycles
+        for (int i = 0; i < 10; i++) {
+            System.out.println("Current Light: " + signal.getCurrentLight());
+
+            // Wait based on light duration
+            switch (signal.getCurrentLight()) {
+                case RED:
+                    Thread.sleep(3000); // RED stays 3 sec
+                    break;
+                case GREEN:
+                    Thread.sleep(4000); // GREEN stays 4 sec
+                    break;
+                case YELLOW:
+                    Thread.sleep(2000); // YELLOW stays 2 sec
+                    break;
+            }
+
+            // Change to next light
+            signal.changeLight();
+        }
+    }
+}

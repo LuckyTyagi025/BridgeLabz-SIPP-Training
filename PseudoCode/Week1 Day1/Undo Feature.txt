@@ -1,0 +1,52 @@
+import java.util.Stack;
+
+class TextEditor {
+    private StringBuilder text;      // current text
+    private Stack<String> history;   // stack to store undo operations
+
+ 
+    public TextEditor() {
+        text = new StringBuilder();
+        history = new Stack<>();
+    }
+
+
+    public void type(String newText) {
+        history.push(text.toString());   // save current state
+        text.append(newText);
+    }
+
+    
+    public void undo() {
+        if (!history.isEmpty()) {
+            text = new StringBuilder(history.pop()); // restore last saved state
+        } else {
+            System.out.println("Nothing to undo!");
+        }
+    }
+    public void display() {
+        System.out.println("Current Text: " + text.toString());
+    }
+}
+
+
+public class UndoFeatureDemo {
+    public static void main(String[] args) {
+        TextEditor editor = new TextEditor();
+
+        editor.type("Hello ");
+        editor.display();
+
+        editor.type("World!");
+        editor.display();
+        editor.undo();
+        editor.display();
+
+      
+        editor.undo();
+        editor.display();
+
+      
+        editor.undo();
+    }
+}

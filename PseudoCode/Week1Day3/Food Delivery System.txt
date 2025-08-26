@@ -1,0 +1,88 @@
+// Customer class
+class Customer {
+    private String name;
+    private String address;
+
+    public Customer(String name, String address) {
+        this.name = name;
+        this.address = address;
+    }
+
+    @Override
+    public String toString() {
+        return name + " (Address: " + address + ")";
+    }
+}
+
+// Restaurant class
+class Restaurant {
+    private String name;
+    private String cuisine;
+
+    public Restaurant(String name, String cuisine) {
+        this.name = name;
+        this.cuisine = cuisine;
+    }
+
+    @Override
+    public String toString() {
+        return name + " [Cuisine: " + cuisine + "]";
+    }
+}
+
+// DeliveryBoy class
+class DeliveryBoy {
+    private String name;
+    private String vehicle;
+
+    public DeliveryBoy(String name, String vehicle) {
+        this.name = name;
+        this.vehicle = vehicle;
+    }
+
+    @Override
+    public String toString() {
+        return name + " (Vehicle: " + vehicle + ")";
+    }
+}
+
+// Order class (Composition)
+class Order {
+    private Customer customer;
+    private Restaurant restaurant;
+    private DeliveryBoy deliveryBoy;
+    private String foodItem;
+    private double price;
+
+    public Order(Customer customer, Restaurant restaurant, DeliveryBoy deliveryBoy, String foodItem, double price) {
+        this.customer = customer;
+        this.restaurant = restaurant;
+        this.deliveryBoy = deliveryBoy;
+        this.foodItem = foodItem;
+        this.price = price;
+    }
+
+    public void showOrderDetails() {
+        System.out.println("\n--- Order Details ---");
+        System.out.println("Customer: " + customer);
+        System.out.println("Restaurant: " + restaurant);
+        System.out.println("Food Item: " + foodItem + " | Price: ₹" + price);
+        System.out.println("Delivery By: " + deliveryBoy);
+    }
+}
+
+// Main class
+public class Main {
+    public static void main(String[] args) {
+        // Create objects
+        Customer customer = new Customer("Rahul Sharma", "Sector 21, Delhi");
+        Restaurant restaurant = new Restaurant("Spicy Bites", "North Indian");
+        DeliveryBoy deliveryBoy = new DeliveryBoy("Amit Kumar", "Bike");
+
+        // Create order (composition)
+        Order order = new Order(customer, restaurant, deliveryBoy, "Paneer Butter Masala", 250.0);
+
+        // Show details
+        order.showOrderDetails();
+    }
+}

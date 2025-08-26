@@ -1,0 +1,47 @@
+import java.util.PriorityQueue;
+
+// Job class
+class Job {
+    String name;
+    int deadline;       // smaller = earlier deadline
+    int processingTime; // smaller = faster
+
+    public Job(String name, int deadline, int processingTime) {
+        this.name = name;
+        this.deadline = deadline;
+        this.processingTime = processingTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Job{" +
+                "name='" + name + '\'' +
+                ", deadline=" + deadline +
+                ", processingTime=" + processingTime +
+                '}';
+    }
+}
+
+// Scheduler using Priority Queue
+class JobScheduler {
+    PriorityQueue<Job> queue;
+
+    public JobScheduler() {
+        // Custom comparator: first by deadline, then by processingTime
+        queue = new PriorityQueue<>((j1, j2) -> {
+            if (j1.deadline != j2.deadline) {
+                return j1.deadline - j2.deadline; // earlier deadline first
+            } else {
+                return j1.processingTime - j2.processingTime; // shorter job first
+            }
+        });
+    }
+
+    // Add job
+    public void addJob(Job job) {
+        queue.add(job);
+        System.out.println("Added: " + job);
+    }
+
+    // Process jobs
+    public voi

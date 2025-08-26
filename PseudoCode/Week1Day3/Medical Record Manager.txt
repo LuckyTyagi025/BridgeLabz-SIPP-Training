@@ -1,0 +1,126 @@
+import java.util.*;
+
+// Searchable interface
+interface Searchable {
+    boolean matches(String keyword);
+}
+
+// Printable interface
+interface Printable {
+    void print();
+}
+
+// Base abstract class for reports
+abstract class MedicalReport implements Searchable, Printable {
+    protected String patientName;
+    protected Date date;
+
+    public MedicalReport(String patientName, Date date) {
+        this.patientName = patientName;
+        this.date = date;
+    }
+}
+
+// Lab Report
+class LabReport extends MedicalReport {
+    private String testName;
+    private String result;
+
+    public LabReport(String patientName, Date date, String testName, String result) {
+        super(patientName, date);
+        this.testName = testName;
+        this.result = result;
+    }
+
+    @Override
+    public boolean matches(String keyword) {
+        return patientName.equalsIgnoreCase(keyword) || testName.equalsIgnoreCase(keyword);
+    }
+
+    @Override
+    public void print() {
+        System.out.println("\n--- Lab Report ---");
+        System.out.println("Patient: " + patientName);
+        System.out.println("Date: " + date);
+        System.out.println("Test: " + testName + " | Result: " + result);
+    }
+}
+
+// Prescription Report
+class Prescription extends MedicalReport {
+    private String doctorName;
+    private List<String> medicines;
+
+    public Prescription(String patientName, Date date, String doctorName, List<String> medicines) {
+        super(patientName, date);
+        this.doctorName = doctorName;
+        this.medicines = medicines;
+    }
+
+    @Override
+    public boolean matches(String keyword) {
+        return patientName.equalsIgnoreCase(keyword) || medicines.contains(keyword);
+    }
+
+    @Override
+    public void print() {
+        System.out.println("\n--- Prescription ---");
+        System.out.println("Patient: " + patientName);
+        System.out.println("Date: " + date);
+        System.out.println("Doctor: " + doctorName);
+        System.out.println("Medicines: " + medicines);
+    }
+}
+
+// Medical Record Manager
+class MedicalRecordManager {
+    private List<MedicalReport> reports = new ArrayList<>();
+
+    // Add report
+    public void addReport(MedicalReport report) {
+        reports.add(report);
+    }
+
+    // Search reports by keyword
+    public void search(String keyword) {
+        System.out.println("\nSearching for: " + keyword);
+        reports.stream()
+                .filter(report -> report.matches(keyword))
+                .forEach(MedicalReport::print);
+    }
+
+    // Print all reports
+    public void printAll() {
+        System.out.println("\n--- All Medical Reports ---");
+        for (MedicalReport report : reports) {
+            report.print();
+        }
+    }
+}
+
+// Main class
+public class Main {
+    public static void main(String[] args) {
+        MedicalRecordManager manager = new MedicalRecordManager();
+
+        // Create reports
+        LabReport lab1 = new LabReport("Rahul Sharma", new Date(), "Blood Test", "Normal");
+        Prescription pres1 = new Prescription("Rahul Sharma", new Date(), "Dr. Mehta",
+                Arrays.asList("Paracetamol", "Vitamin C"));
+
+        LabReport lab2 = new LabReport("Neha Verma", new Date(), "X-Ray", "Fracture");
+
+        // Add to manager
+        manager.addReport(lab1);
+        manager.addReport(pres1);
+        manager.addReport(lab2);
+
+        // Print all
+        manager.printAll();
+
+        // Search
+        manager.search("Rahul Sharma");  // by patient
+        manager.search("Vitamin C");     // by medicine
+        manager.search("X-Ray");         // by test
+    }
+}

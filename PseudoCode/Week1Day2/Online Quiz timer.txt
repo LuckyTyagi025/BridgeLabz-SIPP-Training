@@ -1,0 +1,44 @@
+// Online Quiz Timer using Circular Array
+class QuizTimer {
+    private int[] timeSlots;    // time allotted for each question
+    private int size;           // total number of questions
+    private int front;          // circular array index
+
+    public QuizTimer(int[] slots) {
+        this.timeSlots = slots;
+        this.size = slots.length;
+        this.front = 0; // start from first question
+    }
+
+    // Run the timer for all questions
+    public void startQuiz() throws InterruptedException {
+        for (int i = 0; i < size; i++) {
+            int questionIndex = (front + i) % size;  // circular tracking
+            int time = timeSlots[questionIndex];
+
+            System.out.println("\nQuestion " + (questionIndex + 1) + " started. Time: " + time + " seconds");
+
+            // Count down time for the question
+            for (int t = time; t > 0; t--) {
+                if (t == 5) {
+                    System.out.println("⚠️ Warning: Only 5 seconds left for Question " + (questionIndex + 1));
+                }
+                System.out.println("Time remaining: " + t + " sec");
+                Thread.sleep(1000); // 1 second delay
+            }
+
+            System.out.println("⏰ Time up for Question " + (questionIndex + 1));
+        }
+    }
+}
+
+// Main class
+public class OnlineQuiz {
+    public static void main(String[] args) throws InterruptedException {
+        // Example: 3 questions with 10, 15, and 20 seconds each
+        int[] slots = {10, 15, 20};
+
+        QuizTimer quiz = new QuizTimer(slots);
+        quiz.startQuiz();
+    }
+}
